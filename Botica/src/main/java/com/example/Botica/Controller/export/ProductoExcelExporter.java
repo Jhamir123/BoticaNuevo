@@ -1,4 +1,4 @@
-package com.example.Botica.web.export;
+package com.example.Botica.Controller.export;
 
 import com.example.Botica.domain.Producto;
 import org.apache.poi.ss.usermodel.*;

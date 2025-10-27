@@ -1,4 +1,4 @@
-package com.example.Botica.web.dto;
+package com.example.Botica.Controller.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

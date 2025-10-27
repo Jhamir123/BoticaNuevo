@@ -1,4 +1,4 @@
-package com.example.Botica.web.validation;
+package com.example.Botica.Controller.validation;
 
 import jakarta.validation.constraints.*;
 import java.math.BigDecimal;

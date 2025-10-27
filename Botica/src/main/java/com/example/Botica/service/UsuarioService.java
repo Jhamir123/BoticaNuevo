@@ -1,8 +1,9 @@
 package com.example.Botica.service;
 
+import com.example.Botica.Controller.dto.RegistroDTO;
 import com.example.Botica.domain.Usuario;
 import com.example.Botica.repository.UsuarioRepository;
-import com.example.Botica.web.dto.RegistroDTO;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

@@ -1,7 +1,8 @@
-package com.example.Botica.web;
+package com.example.Botica.Controller;
 
+import com.example.Botica.Controller.dto.RegistroDTO;
 import com.example.Botica.service.UsuarioService;
-import com.example.Botica.web.dto.RegistroDTO;
+
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;

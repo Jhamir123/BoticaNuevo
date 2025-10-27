@@ -1,7 +1,8 @@
-package com.example.Botica.web;
+package com.example.Botica.Controller;
 
+import com.example.Botica.Controller.export.ProductoExcelExporter;
 import com.example.Botica.repository.ProductoRepository;
-import com.example.Botica.web.export.ProductoExcelExporter;
+
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

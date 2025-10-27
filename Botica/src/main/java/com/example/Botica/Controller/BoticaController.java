@@ -1,4 +1,4 @@
-package com.example.Botica.web;
+package com.example.Botica.Controller;
 
 import com.example.Botica.cart.CarritoItem;
 import com.example.Botica.domain.Producto;
