@@ -22,7 +22,7 @@ public class BoticaController {
   private final CatalogoService catalogo;
   private final ProductoRepository productoRepo;
 
-  // ===== Atributos de sesión =====
+ 
   @ModelAttribute("carrito")
   public List<CarritoItem> initCarrito() {
     return new ArrayList<>();
@@ -43,7 +43,6 @@ public class BoticaController {
     return BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP);
   }
 
-  // ===== Inicio y catálogo =====
   @GetMapping({ "/", "/inicio" })
   public String inicio(Model model) {
     var destacados = productoRepo.findAll().stream()
@@ -76,7 +75,6 @@ public class BoticaController {
     return "catalogo";
   }
 
-  // ===== Carrito =====
   @PostMapping("/carrito/agregar/{id}")
   public String agregar(@PathVariable Long id,
       @RequestParam(defaultValue = "1") int cantidad,
@@ -148,7 +146,6 @@ public class BoticaController {
     return "redirect:/carrito";
   }
 
-  // ===== Helper interno =====
   private Totales calcularTotales(List<CarritoItem> carrito, BigDecimal desc, String metodoEnvio) {
     BigDecimal subtotal = carrito.stream()
         .map(CarritoItem::getImporte)

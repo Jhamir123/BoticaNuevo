@@ -3,10 +3,9 @@
 <th:block th:replace="~{fragments/_head :: head('Inicio — Botica Online')}"></th:block>
 
 <body class="bg-light">
-  <!-- NAVBAR -->
+
   <th:block th:replace="~{fragments/_navbar :: navbar(active='inicio')}"></th:block>
 
-  <!-- HERO principal -->
   <section class="hero-gradient py-5" style="background:linear-gradient(135deg,#4FB0A6 0%,#E3F2EF 100%);">
     <div class="container py-4">
       <div class="row align-items-center g-4">
@@ -27,7 +26,6 @@
     </div>
   </section>
 
-  <!-- SECCIÓN DESTACADOS -->
   <section class="container py-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
       <h2 class="fw-bold mb-0">Productos destacados</h2>
@@ -56,7 +54,6 @@
     </div>
   </section>
 
-  <!-- SECCIÓN POR QUÉ ELEGIRNOS -->
   <section class="bg-white py-5 border-top border-bottom">
     <div class="container">
       <h2 class="fw-bold mb-4 text-center">¿Por qué elegirnos?</h2>
@@ -86,7 +83,6 @@
     </div>
   </section>
 
-  <!-- SECCIÓN SOBRE NOSOTROS -->
   <section class="container py-5">
     <div class="row align-items-center g-4">
       <div class="col-lg-6">
@@ -105,12 +101,11 @@
     </div>
   </section>
 
-  <!-- FOOTER -->
   <footer class="bg-dark text-light mt-5 pt-5 pb-3">
     <div class="container">
       <div class="row g-4">
         <div class="col-md-4">
-          <h5 class="fw-bold mb-3">Botica Online</h5>
+          <h5 class="fw-bold mb-3">Reja Blanca</h5>
           <p class="small text-muted">Tu farmacia digital de confianza. Productos certificados, atención rápida y soporte 24/7.</p>
           <div class="d-flex gap-3">
             <a href="#" class="text-light"><i class="bi bi-facebook fs-5"></i></a>
@@ -138,7 +133,7 @@
       <hr class="border-light my-4">
 
       <div class="text-center small text-muted">
-        © <span th:text="${#dates.format(#dates.createNow(),'yyyy')}">2025</span> Botica Online — Todos los derechos reservados.
+        © <span th:text="${#dates.format(#dates.createNow(),'yyyy')}">2025</span> Reja Blanca — Todos los derechos reservados.
       </div>
     </div>
   </footer>

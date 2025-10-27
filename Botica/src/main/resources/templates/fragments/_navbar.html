@@ -6,7 +6,7 @@
   <div class="container">
     <a class="navbar-brand fw-bold d-flex align-items-center gap-2" th:href="@{/}">
       <i class="bi bi-capsule-pill text-primary"></i>
-      <span>Botica Online</span>
+      <span>Reja Blanca</span>
     </a>
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav" aria-controls="nav"
@@ -16,21 +16,19 @@
 
     <div id="nav" class="collapse navbar-collapse">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <!-- INICIO -->
+        
         <li class="nav-item">
           <a class="nav-link nav-underline"
              th:classappend="${active}=='inicio' ? ' active' : ''"
              th:href="@{/inicio}">Inicio</a>
         </li>
 
-        <!-- PROMOCIONES -->
         <li class="nav-item">
           <a class="nav-link nav-underline"
              th:classappend="${active}=='promociones' ? ' active' : ''"
              th:href="@{/promociones}">Promociones</a>
         </li>
 
-        <!-- CATÁLOGO -->
         <li class="nav-item">
           <a class="nav-link nav-underline"
              th:classappend="${active}=='catalogo' ? ' active' : ''"
@@ -38,7 +36,6 @@
         </li>
       </ul>
 
-      <!-- Buscador -->
       <form class="d-none d-lg-flex me-3" role="search" th:action="@{/catalogo}">
         <div class="input-group input-group-sm">
           <span class="input-group-text bg-transparent"><i class="bi bi-search"></i></span>
@@ -46,10 +43,8 @@
         </div>
       </form>
 
-      <!-- Acciones -->
       <div class="d-flex align-items-center gap-2">
 
-        <!-- ANÓNIMO: botón Iniciar -->
         <a sec:authorize="isAnonymous()"
            class="btn btn-outline-secondary btn-sm"
            th:classappend="${active}=='login' ? ' active' : ''"
@@ -57,7 +52,6 @@
           <i class="bi bi-person"></i> Iniciar
         </a>
 
-        <!-- AUTENTICADO: saludo + Cerrar sesión -->
         <div sec:authorize="isAuthenticated()" class="d-flex align-items-center gap-2">
           <span class="text-muted small">
             Bienvenido&nbsp;<strong th:text="${#authentication.name}">usuario@correo.com</strong>
@@ -70,7 +64,6 @@
           </form>
         </div>
 
-        <!-- Carrito -->
         <a class="btn btn-primary btn-sm position-relative"
            th:classappend="${active}=='carrito' ? ' active' : ''"
            th:href="@{/carrito}">

@@ -29,7 +29,6 @@ public class CheckoutService {
         .map(CarritoItem::getImporte)
         .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-    // ✅ Reemplazado setScale(2, BigDecimal.ROUND_HALF_UP) por método moderno
     BigDecimal igv = subtotal.multiply(new BigDecimal("0.18"))
                              .setScale(2, RoundingMode.HALF_UP);
 

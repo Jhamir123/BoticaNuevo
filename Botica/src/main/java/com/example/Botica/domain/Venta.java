@@ -27,7 +27,6 @@ public class Venta {
   @Column(length = 20, nullable = false)
   private MetodoPago metodo;
 
-  // temporal si aún no enlazas con Usuario
   private String emailCliente;
 
   @Column(precision = 10, scale = 2, nullable = false)

@@ -24,7 +24,6 @@ public class CheckoutController {
   private final CheckoutService checkoutService;
   private final VentaRepository ventaRepo;
 
-  // ===== Atributos de sesión =====
   @ModelAttribute("carrito")
   public List<CarritoItem> initCarrito() { return new ArrayList<>(); }
 
@@ -34,7 +33,6 @@ public class CheckoutController {
   @ModelAttribute("metodoEnvio")
   public String initMetodoEnvio() { return "ENTREGA"; }
 
-  // ===== Página de pago =====
   @GetMapping("/pago")
   public String pago(@ModelAttribute("carrito") List<CarritoItem> carrito,
                      @ModelAttribute("descuento") BigDecimal descuento,
@@ -77,7 +75,6 @@ public class CheckoutController {
     return "pago";
   }
 
-  // ===== Confirmar pago =====
   @PostMapping("/pago/confirmar")
   public String confirmar(@RequestParam(name = "metodoPago", required = false) String metodoStr,
                           @ModelAttribute("carrito") List<CarritoItem> carrito,
@@ -86,7 +83,7 @@ public class CheckoutController {
     if (metodoStr == null || metodoStr.isBlank()) metodoStr = "YAPE";
     MetodoPago metodo = MetodoPago.valueOf(metodoStr.toUpperCase());
 
-    String emailCliente = "cliente@demo.com"; // Simulación
+    String emailCliente = "cliente@demo.com";
 
     Venta venta = checkoutService.confirmarCompra(metodo, carrito, emailCliente);
 
@@ -96,7 +93,6 @@ public class CheckoutController {
     return "redirect:/comprobante/" + venta.getId();
   }
 
-  // ===== Comprobante =====
   @GetMapping("/comprobante/{id}")
   public String comprobante(@PathVariable Long id, Model model) {
     Venta venta = ventaRepo.findWithDetallesById(id)
@@ -110,7 +106,6 @@ public class CheckoutController {
     return "comprobante";
   }
 
-  // ===== PDF Placeholder =====
   @GetMapping("/comprobante/{id}/pdf")
   public String descargarPdf(@PathVariable Long id, Model model) {
     Venta venta = ventaRepo.findWithDetallesById(id)

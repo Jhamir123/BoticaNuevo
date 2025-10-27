@@ -29,5 +29,5 @@ public class Usuario {
   private boolean enabled;
 
   @Column(nullable = false, length = 20)
-  private String role; // e.g. "ROLE_CLIENTE"
+  private String role;
 }
