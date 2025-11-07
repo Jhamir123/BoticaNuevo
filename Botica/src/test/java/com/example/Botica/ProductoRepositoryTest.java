@@ -2,6 +2,8 @@ package com.example.Botica;
 
 import com.example.Botica.domain.Producto;
 import com.example.Botica.repository.ProductoRepository;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -13,30 +15,63 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
-@ActiveProfiles("test") // usa application-test.properties (H2)
+@ActiveProfiles("test")
 class ProductoRepositoryTest {
 
     @Autowired
-    private ProductoRepository productoRepository;
+    private ProductoRepository repo;
+
+    @BeforeEach
+    void seed() {
+        repo.deleteAll();
+
+        repo.save(Producto.builder()
+                .nombre("Ibuprofeno 400mg")
+                .categoria("Analgésicos")
+                .precio(new BigDecimal("8.20"))
+                .promoActiva(true)
+                .destacado(true)
+                .build());
+
+        repo.save(Producto.builder()
+                .nombre("Paracetamol 500mg")
+                .categoria("Analgésicos")
+                .precio(new BigDecimal("3.50"))
+                .promoActiva(false)
+                .destacado(false)
+                .build());
+
+        repo.save(Producto.builder()
+                .nombre("Vitamina C 1g")
+                .categoria("Vitaminas")
+                .precio(new BigDecimal("1.20"))
+                .promoActiva(true)
+                .destacado(false)
+                .build());
+    }
 
     @Test
-    void saveAndFindAll() {
-        Producto p = new Producto();
-        p.setNombre("Paracetamol 500mg");
-        p.setDescripcion("Analgésico");
-        p.setCategoria("Analgésicos");
-        p.setPrecio(new BigDecimal("3.50"));
-        p.setPrecioRegular(new BigDecimal("4.20"));
-        p.setPromoActiva(true);
-        p.setDestacado(true);
+    @DisplayName("findByPromoActivaTrueOrderByNombreAsc: solo promocoes activas ordenadas por nombre")
+    void promoActivasOrden() {
+        List<Producto> list = repo.findByPromoActivaTrueOrderByNombreAsc();
+        assertThat(list).extracting(Producto::getNombre)
+                .containsExactly("Ibuprofeno 400mg", "Vitamina C 1g");
+    }
 
-        productoRepository.save(p);
+    @Test
+    @DisplayName("findByCategoria...AndPrecioBetween: filtra por categoria (case-insensitive, contains) y rango de precio")
+    void categoriaYRango() {
+        List<Producto> list = repo.findByCategoriaIgnoreCaseContainingAndPrecioBetweenOrderByNombreAsc(
+                "analg", new BigDecimal("3.00"), new BigDecimal("10.00"));
 
-        List<Producto> all = productoRepository.findAll();
+        assertThat(list).extracting(Producto::getNombre)
+                .containsExactly("Ibuprofeno 400mg", "Paracetamol 500mg");
+    }
 
-        assertThat(all)
-            .isNotEmpty()
-            .extracting(Producto::getNombre)
-            .contains("Paracetamol 500mg");
+    @Test
+    @DisplayName("findByNombreIgnoreCaseContainingOrderByNombreAsc: búsqueda por nombre sin sensibilidad a mayúsculas")
+    void buscarPorNombre() {
+        List<Producto> list = repo.findByNombreIgnoreCaseContainingOrderByNombreAsc("vitamina");
+        assertThat(list).extracting(Producto::getCategoria).containsExactly("Vitaminas");
     }
 }
