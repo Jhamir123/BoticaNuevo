@@ -22,7 +22,7 @@ public class BoticaController {
   private final CatalogoService catalogo;
   private final ProductoRepository productoRepo;
 
- 
+  // ---------- Inicializadores de sesión ----------
   @ModelAttribute("carrito")
   public List<CarritoItem> initCarrito() {
     return new ArrayList<>();
@@ -33,16 +33,19 @@ public class BoticaController {
     return BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP);
   }
 
-  @ModelAttribute("metodoEnvio")
-  public String initMetodoEnvio() {
-    return "ENTREGA";
-  }
-
   @ModelAttribute("envio")
   public BigDecimal initEnvio() {
     return BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP);
   }
 
+  // *** Clave para evitar IllegalStateException: siempre existirá en sesión ***
+  @ModelAttribute("metodoEnvio")
+  public String initMetodoEnvio() {
+    // default coherente con tu lógica ("RECOJO" / "ENTREGA")
+    return "RECOJO";
+  }
+
+  // ---------- Vistas públicas ----------
   @GetMapping({ "/", "/inicio" })
   public String inicio(Model model) {
     var destacados = productoRepo.findAll().stream()
@@ -75,12 +78,18 @@ public class BoticaController {
     return "catalogo";
   }
 
+  // ---------- Carrito ----------
   @PostMapping("/carrito/agregar/{id}")
   public String agregar(@PathVariable Long id,
       @RequestParam(defaultValue = "1") int cantidad,
       @ModelAttribute("carrito") List<CarritoItem> carrito) {
+
+    // asegura mínimo 1
+    cantidad = Math.max(1, cantidad);
+
     var prod = productoRepo.findById(id).orElseThrow();
-    var existente = carrito.stream().filter(ci -> ci.getProducto().getId().equals(id)).findFirst();
+    var existente = carrito.stream()
+        .filter(ci -> ci.getProducto().getId().equals(id)).findFirst();
 
     if (existente.isPresent()) {
       existente.get().setCantidad(existente.get().getCantidad() + cantidad);
@@ -95,6 +104,11 @@ public class BoticaController {
       @ModelAttribute("descuento") BigDecimal descuento,
       @ModelAttribute("metodoEnvio") String metodoEnvio,
       Model model) {
+
+    // tolerancia por si algo llega nulo
+    if (carrito == null) carrito = new ArrayList<>();
+    if (descuento == null) descuento = BigDecimal.ZERO;
+    if (metodoEnvio == null || metodoEnvio.isBlank()) metodoEnvio = "RECOJO";
 
     Totales t = calcularTotales(carrito, descuento, metodoEnvio);
 
@@ -111,7 +125,10 @@ public class BoticaController {
   public String cambiarCantidad(@PathVariable Long id,
       @RequestParam int cantidad,
       @ModelAttribute("carrito") List<CarritoItem> carrito) {
-    carrito.stream().filter(ci -> ci.getProducto().getId().equals(id)).findFirst()
+
+    carrito.stream()
+        .filter(ci -> ci.getProducto().getId().equals(id))
+        .findFirst()
         .ifPresent(ci -> ci.setCantidad(Math.max(1, cantidad)));
     return "redirect:/carrito";
   }
@@ -119,6 +136,7 @@ public class BoticaController {
   @PostMapping("/carrito/eliminar/{id}")
   public String eliminar(@PathVariable Long id,
       @ModelAttribute("carrito") List<CarritoItem> carrito) {
+
     carrito.removeIf(ci -> ci.getProducto().getId().equals(id));
     return "redirect:/carrito";
   }
@@ -127,8 +145,9 @@ public class BoticaController {
   public String aplicarCupon(@RequestParam String codigo,
       @ModelAttribute("carrito") List<CarritoItem> carrito,
       Model model) {
+
     BigDecimal descuento = BigDecimal.ZERO;
-    BigDecimal subtotal = carrito.stream()
+    BigDecimal subtotal = (carrito == null ? new ArrayList<CarritoItem>() : carrito).stream()
         .map(CarritoItem::getImporte)
         .reduce(BigDecimal.ZERO, BigDecimal::add);
 
@@ -146,16 +165,16 @@ public class BoticaController {
     return "redirect:/carrito";
   }
 
+  // ---------- Cálculo de totales ----------
   private Totales calcularTotales(List<CarritoItem> carrito, BigDecimal desc, String metodoEnvio) {
-    BigDecimal subtotal = carrito.stream()
+    BigDecimal subtotal = (carrito == null ? new ArrayList<CarritoItem>() : carrito).stream()
         .map(CarritoItem::getImporte)
         .reduce(BigDecimal.ZERO, BigDecimal::add)
         .setScale(2, RoundingMode.HALF_UP);
 
     BigDecimal descuento = (desc == null ? BigDecimal.ZERO : desc).setScale(2, RoundingMode.HALF_UP);
     BigDecimal base = subtotal.subtract(descuento);
-    if (base.signum() < 0)
-      base = BigDecimal.ZERO;
+    if (base.signum() < 0) base = BigDecimal.ZERO;
 
     BigDecimal envio = ("RECOJO".equalsIgnoreCase(metodoEnvio))
         ? BigDecimal.ZERO
@@ -172,7 +191,6 @@ public class BoticaController {
 
   private static class Totales {
     final BigDecimal subtotal, descuento, envio, igv, total;
-
     Totales(BigDecimal s, BigDecimal d, BigDecimal e, BigDecimal i, BigDecimal t) {
       subtotal = s;
       descuento = d;
